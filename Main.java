@@ -5,6 +5,28 @@ import java.util.Random;
 
 public class Main {
 
+    static boolean checkLuhn(String cardNo)
+    {
+        int nDigits = cardNo.length();
+
+        int nSum = 0;
+        boolean isSecond = false;
+        for (int i = nDigits - 1; i >= 0; i--)
+        {
+
+            int d = cardNo.charAt(i) - '0';
+
+            if (isSecond)
+                d = d * 2;
+
+            nSum += d / 10;
+            nSum += d % 10;
+
+            isSecond = !isSecond;
+        }
+        return (nSum % 10 == 0);
+    }
+
     protected static void createAcc(long wholeAccNum,int Pin) {
         System.out.println("Your card has been created");
         System.out.println("Your card number:");
@@ -78,10 +100,17 @@ public class Main {
                     long min = 1_000_000_000L;
                     int maxPin = 9999;
                     int minPin = 1_000;
-                    long randomAccNum = random.nextInt((int) (max - min)) + min;
-                    Pin = random.nextInt((maxPin - minPin)) + minPin;
-                    wholeAccNum = 4_000_000_000_000_000L + randomAccNum;
-                    createAcc(wholeAccNum, Pin);
+                    boolean isLuhn = false;
+                    while (!isLuhn) {
+                        long randomAccNum = random.nextInt((int) (max - min)) + min;
+                        Pin = random.nextInt((maxPin - minPin)) + minPin;
+                        wholeAccNum = 4_000_000_000_000_000L + randomAccNum;
+                        String cardNo = Long.toString(wholeAccNum);
+                        if (checkLuhn(cardNo)) {
+                            isLuhn = true;
+                            createAcc(wholeAccNum, Pin);
+                        }
+                    }
                     break;
                 case 2:
                     if (wholeAccNum == 0 && Pin == 0) {
