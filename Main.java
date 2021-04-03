@@ -61,9 +61,11 @@ public class Main {
         }
     }
 
-    protected static void menu(long randomAccNum,int Pin,long wholeAccNum) {
+    protected static void menu() {
         Scanner scanner = new Scanner(System.in);
         boolean isTrue = false;
+        long wholeAccNum = 0L;
+        int Pin = 0;
         while (!isTrue) {
             System.out.println("1. Create an account");
             System.out.println("2. Log into account");
@@ -71,10 +73,22 @@ public class Main {
             int menuSwitch = scanner.nextInt();
             switch (menuSwitch) {
                 case 1:
+                    Random random = new Random();
+                    long max = 9_999_999_999L;
+                    long min = 1_000_000_000L;
+                    int maxPin = 9999;
+                    int minPin = 1_000;
+                    long randomAccNum = random.nextInt((int) (max - min)) + min;
+                    Pin = random.nextInt((maxPin - minPin)) + minPin;
+                    wholeAccNum = 4_000_000_000_000_000L + randomAccNum;
                     createAcc(wholeAccNum, Pin);
                     break;
                 case 2:
-                    logAcc(wholeAccNum, Pin);
+                    if (wholeAccNum == 0 && Pin == 0) {
+                        System.out.println("Create an account before logging in");
+                    } else {
+                        logAcc(wholeAccNum, Pin);
+                    }
                     break;
                 case 0:
                     System.out.println("Bye!");
@@ -88,18 +102,7 @@ public class Main {
     }
 
 
-
-
-
     public static void main(String[] args) {
-        Random random = new Random();       //TODO make program output not identical numbers and pin for card
-        long max = 9999999999L;
-        long min = 0_000_000_000L;
-        int maxPin = 9999;
-        int minPin = 0_000;
-        long randomAccNum = random.nextInt((int) (max - min)) + min;
-        int Pin = random.nextInt((maxPin - minPin)) + minPin;
-        long wholeAccNum = 4000000000000000L + randomAccNum;
-        menu(randomAccNum,Pin,wholeAccNum);
+        menu();
     }
 }
