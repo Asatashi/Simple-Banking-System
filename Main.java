@@ -1,18 +1,19 @@
 package banking;
 
-import java.io.File;
-import java.sql.*;
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
+import java.sql.*;
 
 public class Main {
 
-    static boolean checkLuhn(String cardNo) {
+    static boolean checkLuhn(String cardNo)
+    {
         int nDigits = cardNo.length();
 
         int nSum = 0;
         boolean isSecond = false;
-        for (int i = nDigits - 1; i >= 0; i--) {
+        for (int i = nDigits - 1; i >= 0; i--)
+        {
 
             int d = cardNo.charAt(i) - '0';
 
@@ -27,14 +28,13 @@ public class Main {
         return (nSum % 10 == 0);
     }
 
-    protected static void createAcc(long wholeAccNum, int Pin) {
+    protected static void createAcc(long wholeAccNum,int Pin) {
         System.out.println("Your card has been created");
         System.out.println("Your card number:");
         System.out.println(wholeAccNum);
         System.out.println("Your card PIN:");
         System.out.println(Pin);
     }
-
     protected static void logAcc(long wholeAccNum, int Pin) {
         Scanner scanner = new Scanner(System.in);
         boolean isTrue = false;
@@ -56,7 +56,6 @@ public class Main {
             }
         }
     }
-
     protected static void account() {
         Scanner scanner = new Scanner(System.in);
         boolean isTrue = false;
@@ -82,10 +81,8 @@ public class Main {
             }
         }
     }
-
     protected static void menu() {
         Scanner scanner = new Scanner(System.in);
-        InsertApp app = new InsertApp();
         boolean isTrue = false;
         long wholeAccNum = 0L;
         int Pin = 0;
@@ -93,8 +90,8 @@ public class Main {
             System.out.println("1. Create an account");
             System.out.println("2. Log into account");
             System.out.println("0. Exit");
-            long menuSwitch = scanner.nextLong();
-            switch ((int) menuSwitch) {
+            int menuSwitch = scanner.nextInt();
+            switch (menuSwitch) {
                 case 1:
                     Random random = new Random();
                     long max = 9_999_999_999L;
@@ -110,7 +107,6 @@ public class Main {
                         if (checkLuhn(cardNo)) {
                             isLuhn = true;
                             createAcc(wholeAccNum, Pin);
-                            app.insert(Pin,wholeAccNum);
                         }
                     }
                     break;
@@ -132,85 +128,10 @@ public class Main {
         }
     }
 
-    public static void createNewDatabase(String DataBase) {
 
-        String url = "jdbc:sqlite:C:\\Users\\Bobek\\sqlite\\db\\" + DataBase;
-
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (conn != null) {
-                DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
-                System.out.println("A new database has been created.");
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static class InsertApp {
-
-        /**
-         * Connect to the test.db database
-         *
-         * @return the Connection object
-         */
-        private Connection connect() {
-            // SQLite connection string
-            String url = "jdbc:sqlite:C:\\Users\\Bobek\\sqlite\\db\\Database.db";
-            Connection conn = null;
-            try {
-                conn = DriverManager.getConnection(url);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            return conn;
-        }
-
-//        /**
-//         * Insert a new row into the warehouses table
-//         *
-//         * @param name
-//         * @param capacity
-//         */
-        public void insert(int Pin, long wholeAccNum) {
-            String sql = "INSERT INTO warehouses(name,capacity) VALUES(?,?)";
-
-            try (Connection conn = this.connect();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setLong(1, wholeAccNum);
-                pstmt.setInt(2, Pin);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-        public static void createNewTable() {
-            // SQLite connection string
-            String url = "jdbc:sqlite:C:\\Users\\Bobek\\sqlite\\db\\Database.db";
-
-            // SQL statement for creating a new table
-            String sql = "CREATE TABLE IF NOT EXISTS warehouses (\n"
-                    + "	id integer PRIMARY KEY,\n"
-                    + "	name text NOT NULL,\n"
-                    + "	capacity real\n"
-                    + ");";
-
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                // create a new table
-                stmt.execute(sql);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
 
     public static void main(String[] args) {
-        if (!new File("C:\\Users\\Bobek\\sqlite\\db\\", "Database.db").exists()) {
-            createNewDatabase("DataBase.db");
-        }
+        InsertApp app = new InsertApp();
         menu();
     }
-}
+}//C:\Users\Bobek\sqlite\db\DataBase.db
